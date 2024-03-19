@@ -1,0 +1,328 @@
+basePath: /
+definitions:
+  model.Actor:
+    properties:
+      birth_date:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      sex:
+        enum:
+        - M
+        - W
+        - "N"
+        type: string
+    required:
+    - name
+    type: object
+  model.AddFilmRequest:
+    properties:
+      actors:
+        items:
+          type: integer
+        type: array
+      description:
+        maxLength: 1000
+        type: string
+      rating:
+        maximum: 10
+        minimum: 0
+        type: integer
+      release_date:
+        type: string
+      title:
+        maxLength: 150
+        minLength: 1
+        type: string
+    required:
+    - release_date
+    - title
+    type: object
+  model.Film:
+    properties:
+      description:
+        maxLength: 1000
+        type: string
+      film_id:
+        type: integer
+      rating:
+        maximum: 10
+        minimum: -1
+        type: integer
+      release_date:
+        type: string
+      title:
+        maxLength: 150
+        type: string
+    required:
+    - film_id
+    type: object
+info:
+  contact:
+    email: grigorikovalenko@gmail.com
+    name: Grigory Kovalenko
+    url: https://github.com/CodeMaster482
+  description: Golang REST API  for managing films, directors and actors in a film
+    library database.
+  title: Go Film Libary REST API
+  version: "1.0"
+paths:
+  /actors:
+    get:
+      description: Retrieves a list of actors.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of actors
+          schema:
+            items:
+              $ref: '#/definitions/model.Actor'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get actors
+      tags:
+      - actors
+  /actors/add:
+    post:
+      consumes:
+      - application/json
+      description: Adds a new actor to the system.
+      parameters:
+      - description: Actor object to be added
+        in: body
+        name: actor
+        required: true
+        schema:
+          $ref: '#/definitions/model.Actor'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ID of the newly added actor
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Add actor
+      tags:
+      - actors
+  /actors/delete:
+    delete:
+      description: Deletes an existing actor from the system by ID.
+      parameters:
+      - description: ID of the actor to be deleted
+        in: query
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: ID of the deleted actor
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Object don't exist
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Delete actor
+      tags:
+      - actors
+  /actors/update:
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing actor in the system.
+      parameters:
+      - description: Actor object to be updated
+        in: body
+        name: actor
+        required: true
+        schema:
+          $ref: '#/definitions/model.Actor'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated actor object
+          schema:
+            $ref: '#/definitions/model.Actor'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Object don't exist
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Update actor
+      tags:
+      - actors
+  /film:
+    get:
+      description: Retrieves a list of films with optional sorting.
+      parameters:
+      - description: Field to sort by (e.g., 'rating')
+        in: query
+        name: sort_by
+        type: string
+      - description: Sort order ('asc' for ascending or 'desc' for descending)
+        in: query
+        name: sort_order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of films
+          schema:
+            items:
+              $ref: '#/definitions/model.Film'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get films
+      tags:
+      - films
+  /film/add:
+    post:
+      consumes:
+      - application/json
+      description: Adds a new film to the system.
+      parameters:
+      - description: Film object to be added
+        in: body
+        name: film
+        required: true
+        schema:
+          $ref: '#/definitions/model.AddFilmRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: ID of the newly added film
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Add film
+      tags:
+      - films
+  /film/delete:
+    delete:
+      description: Deletes an existing film from the system by ID.
+      parameters:
+      - description: ID of the film to be deleted
+        in: query
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: ID of the deleted film
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Delete film
+      tags:
+      - films
+  /film/search:
+    get:
+      description: Searches for films by title.
+      parameters:
+      - description: Title to search for
+        in: query
+        name: search
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Found film
+          schema:
+            $ref: '#/definitions/model.Film'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Search film
+      tags:
+      - films
+  /film/update:
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing film in the system.
+      parameters:
+      - description: Film object to be updated
+        in: body
+        name: film
+        required: true
+        schema:
+          $ref: '#/definitions/model.Film'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ID of the updated film
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Update film
+      tags:
+      - films
+swagger: "2.0"

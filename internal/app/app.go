@@ -18,8 +18,19 @@ import (
 	"films_library/pkg/httpserver"
 	"films_library/pkg/logger"
 	"films_library/pkg/postgres"
+
+	_ "films_library/docs"
+
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
+// @title Go Film Libary REST API
+// @version 1.0
+// @description Golang REST API  for managing films, directors and actors in a film library database.
+// @contact.name Grigory Kovalenko
+// @contact.url https://github.com/CodeMaster482
+// @contact.email grigorikovalenko@gmail.com
+// @BasePath /
 func Run(cfg *config.Config) {
 	l := logger.New(cfg.Log.Level)
 
@@ -52,6 +63,12 @@ func Run(cfg *config.Config) {
 	// HTTP Server
 	mux := http.NewServeMux()
 
+	mux.Handle("/swagger/", httpSwagger.Handler(
+		httpSwagger.DeepLinking(true),
+		httpSwagger.DocExpansion("none"),
+		httpSwagger.DomID("swagger-ui"),
+	))
+
 	filmDelivery.NewFilmHandler(mux, filmUsecase, l)
 	actorDelivery.NewActorHandler(mux, actorUsecase, l)
 
@@ -61,6 +78,7 @@ func Run(cfg *config.Config) {
 	r = middlware.Authentication(r)
 
 	httpServer := httpserver.New(r, httpserver.Port(cfg.HTTP.Port))
+	l.Info("server running on " + cfg.HTTP.Port)
 
 	// Waiting signal
 	interrupt := make(chan os.Signal, 1)

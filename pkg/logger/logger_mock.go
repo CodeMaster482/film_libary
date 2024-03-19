@@ -8,6 +8,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
+	logrus "github.com/sirupsen/logrus"
 )
 
 // MockInterface is a mock of Interface interface.
@@ -119,10 +120,10 @@ func (mr *MockInterfaceMockRecorder) Warn(message interface{}, args ...interface
 }
 
 // WithFields mocks base method.
-func (m *MockInterface) WithFields(fields map[string]interface{}) Interface {
+func (m *MockInterface) WithFields(fields map[string]interface{}) *logrus.Entry {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "WithFields", fields)
-	ret0, _ := ret[0].(Interface)
+	ret0, _ := ret[0].(*logrus.Entry)
 	return ret0
 }
 

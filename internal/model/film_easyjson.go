@@ -110,7 +110,7 @@ func easyjson14b8084aDecodeFilmsLibraryInternalModel1(in *jlexer.Lexer, out *Fil
 		}
 		switch key {
 		case "film_id":
-			out.ID = uint(in.Uint())
+			out.ID = uint64(in.Uint64())
 		case "title":
 			out.Title = string(in.String())
 		case "description":
@@ -138,7 +138,7 @@ func easyjson14b8084aEncodeFilmsLibraryInternalModel1(out *jwriter.Writer, in Fi
 	{
 		const prefix string = ",\"film_id\":"
 		out.RawString(prefix[1:])
-		out.Uint(uint(in.ID))
+		out.Uint64(uint64(in.ID))
 	}
 	{
 		const prefix string = ",\"title\":"

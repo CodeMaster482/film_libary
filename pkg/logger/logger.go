@@ -16,7 +16,7 @@ type Interface interface {
 	Warn(message string, args ...interface{})
 	Error(message interface{}, args ...interface{})
 	Fatal(message interface{}, args ...interface{})
-	WithFields(fields map[string]interface{}) Interface
+	WithFields(fields map[string]interface{}) *logrus.Entry
 }
 
 // Logger -.
@@ -106,8 +106,6 @@ func (l *Logger) msg(level string, message interface{}, args ...interface{}) {
 	}
 }
 
-func (l *Logger) WithFields(fields map[string]interface{}) Interface {
-	return &Logger{
-		logger: l.logger.WithFields(fields).Logger,
-	}
+func (l *Logger) WithFields(fields map[string]interface{}) *logrus.Entry {
+	return l.logger.WithFields(fields)
 }

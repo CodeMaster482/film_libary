@@ -12,19 +12,27 @@ import (
 )
 
 func TestUpdateFilm(t *testing.T) {
+	film := model.Film{
+		Title:       "Updated Title",
+		ReleaseDate: time.Now(),
+		ID:          1,
+		Description: "...",
+		Rating:      8,
+	}
+
 	tests := []struct {
 		name       string
-		returnRows uint
+		returnRows *pgxmock.Rows
 		errRows    error
 	}{
 		{
 			name:       "Success",
-			returnRows: uint(1),
+			returnRows: pgxmock.NewRows([]string{"film_id"}).AddRow(film.ID),
 			errRows:    nil,
 		},
 		{
 			name:       "Error",
-			returnRows: uint(0),
+			returnRows: &pgxmock.Rows{},
 			errRows:    errors.New("mock error"),
 		},
 	}
@@ -39,17 +47,9 @@ func TestUpdateFilm(t *testing.T) {
 
 			repo := NewRepository(mock)
 
-			film := model.Film{
-				Title:       "Updated Title",
-				ReleaseDate: time.Now(),
-				ID:          1,
-				Description: "...",
-				Rating:      8,
-			}
-
-			mock.ExpectExec("^UPDATE film SET title=\\$1, \"description\"=\\$2, release_date=\\$3, rating=\\$4 WHERE film_id=\\$5 RETURNING film_id$").
+			mock.ExpectQuery(`UPDATE film SET title=$1, "description"=$2, release_date=$3, rating=$4 WHERE film_id=$5 RETURNING film_id`).
 				WithArgs(film.Title, film.Description, film.ReleaseDate, film.Rating, film.ID).
-				WillReturnResult(pgxmock.NewResult("UPDATE", 1)).
+				WillReturnRows(test.returnRows).
 				WillReturnError(test.errRows)
 
 			updatedFilmID, err := repo.UpdateFilm(context.Background(), film)

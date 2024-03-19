@@ -1,0 +1,493 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Golang REST API  for managing films, directors and actors in a film library database.",
+        "title": "Go Film Libary REST API",
+        "contact": {
+            "name": "Grigory Kovalenko",
+            "url": "https://github.com/CodeMaster482",
+            "email": "grigorikovalenko@gmail.com"
+        },
+        "version": "1.0"
+    },
+    "basePath": "/",
+    "paths": {
+        "/actors": {
+            "get": {
+                "description": "Retrieves a list of actors.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "actors"
+                ],
+                "summary": "Get actors",
+                "responses": {
+                    "200": {
+                        "description": "List of actors",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Actor"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/actors/add": {
+            "post": {
+                "description": "Adds a new actor to the system.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "actors"
+                ],
+                "summary": "Add actor",
+                "parameters": [
+                    {
+                        "description": "Actor object to be added",
+                        "name": "actor",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Actor"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ID of the newly added actor",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/actors/delete": {
+            "delete": {
+                "description": "Deletes an existing actor from the system by ID.",
+                "tags": [
+                    "actors"
+                ],
+                "summary": "Delete actor",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID of the actor to be deleted",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ID of the deleted actor",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Object don't exist",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/actors/update": {
+            "put": {
+                "description": "Updates an existing actor in the system.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "actors"
+                ],
+                "summary": "Update actor",
+                "parameters": [
+                    {
+                        "description": "Actor object to be updated",
+                        "name": "actor",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Actor"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated actor object",
+                        "schema": {
+                            "$ref": "#/definitions/model.Actor"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Object don't exist",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/film": {
+            "get": {
+                "description": "Retrieves a list of films with optional sorting.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "films"
+                ],
+                "summary": "Get films",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Field to sort by (e.g., 'rating')",
+                        "name": "sort_by",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort order ('asc' for ascending or 'desc' for descending)",
+                        "name": "sort_order",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of films",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Film"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/film/add": {
+            "post": {
+                "description": "Adds a new film to the system.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "films"
+                ],
+                "summary": "Add film",
+                "parameters": [
+                    {
+                        "description": "Film object to be added",
+                        "name": "film",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.AddFilmRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "ID of the newly added film",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/film/delete": {
+            "delete": {
+                "description": "Deletes an existing film from the system by ID.",
+                "tags": [
+                    "films"
+                ],
+                "summary": "Delete film",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID of the film to be deleted",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ID of the deleted film",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/film/search": {
+            "get": {
+                "description": "Searches for films by title.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "films"
+                ],
+                "summary": "Search film",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Title to search for",
+                        "name": "search",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Found film",
+                        "schema": {
+                            "$ref": "#/definitions/model.Film"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/film/update": {
+            "put": {
+                "description": "Updates an existing film in the system.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "films"
+                ],
+                "summary": "Update film",
+                "parameters": [
+                    {
+                        "description": "Film object to be updated",
+                        "name": "film",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Film"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ID of the updated film",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "model.Actor": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "birth_date": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "sex": {
+                    "type": "string",
+                    "enum": [
+                        "M",
+                        "W",
+                        "N"
+                    ]
+                }
+            }
+        },
+        "model.AddFilmRequest": {
+            "type": "object",
+            "required": [
+                "release_date",
+                "title"
+            ],
+            "properties": {
+                "actors": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "description": {
+                    "type": "string",
+                    "maxLength": 1000
+                },
+                "rating": {
+                    "type": "integer",
+                    "maximum": 10,
+                    "minimum": 0
+                },
+                "release_date": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string",
+                    "maxLength": 150,
+                    "minLength": 1
+                }
+            }
+        },
+        "model.Film": {
+            "type": "object",
+            "required": [
+                "film_id"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "maxLength": 1000
+                },
+                "film_id": {
+                    "type": "integer"
+                },
+                "rating": {
+                    "type": "integer",
+                    "maximum": 10,
+                    "minimum": -1
+                },
+                "release_date": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string",
+                    "maxLength": 150
+                }
+            }
+        }
+    }
+}

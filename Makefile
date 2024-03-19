@@ -5,20 +5,12 @@ LOCAL_BIN:=$(CURDIR)/bin
 PATH:=$(LOCAL_BIN):$(PATH)
 
 compose-up: ### Run docker-compose
-	docker-compose up --build -d postgres && docker-compose logs -f
+	docker-compose up --build -d postgres api && docker-compose logs -f
 .PHONY: compose-up
 
 compose-down: ### Down docker-compose
 	docker-compose down --remove-orphans
 .PHONY: compose-down
-
-swag-v1: ### swag init
-	swag init -g internal/app/app.go
-.PHONY: swag-v1
-
-test: ### run test
-	go test -v -cover -race ./internal/...
-.PHONY: test
 
 docker-rm-volume: ### remove docker volume
 	docker volume rm film_libary_pg-data
@@ -27,6 +19,14 @@ docker-rm-volume: ### remove docker volume
 docker-it-db:
 	docker exec -it postgres psql -U CodeMaster482 -d FLibraryDB 
 .PHONY: docker-it-db
+
+swag-v1: ### swag init
+	swag init -g ./internal/app/app.go
+.PHONY: swag-v1
+
+test: ### run test
+	go test -v -cover -race ./internal/...
+.PHONY: test
 
 lint: linter-golangci linter-hadolint linter-dotenv ### run all linters
 .PHONY: lint

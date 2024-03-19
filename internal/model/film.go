@@ -3,7 +3,7 @@ package model
 import "time"
 
 type Film struct {
-	ID          uint      `json:"film_id" validate:"required"`
+	ID          uint64    `json:"film_id" validate:"required"`
 	Title       string    `json:"title" validate:"max=150"`
 	Description string    `json:"description" validate:"max=1000"`
 	ReleaseDate time.Time `json:"release_date"`

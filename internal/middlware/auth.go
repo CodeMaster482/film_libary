@@ -1,12 +1,19 @@
 package middlware
 
 import (
-	"films_library/pkg/response"
 	"net/http"
+	"strings"
+
+	"films_library/pkg/response"
 )
 
 func Authentication(next http.Handler) http.Handler {
 	fn := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if strings.HasPrefix(r.URL.Path, "/swagger/") {
+			next.ServeHTTP(w, r)
+			return
+		}
+
 		cookie, err := r.Cookie("session_id")
 		if err != nil || cookie == nil {
 			response.ErrorResponse(w, http.StatusUnauthorized, "missing token unauthorized", nil)

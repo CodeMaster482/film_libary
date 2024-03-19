@@ -27,5 +27,21 @@ services:
     networks:
     - film-net
   
+  api:
+    container_name: api
+    build:
+      context: .
+      dockerfile: build/Dockerfile.api
+    restart: always
+    ports:
+      - "8080:8080"
+    volumes:
+      - .env:/docker-filmLibrary/.env
+      - ./config/config.yml:/docker-filmLibrary/config/config.yml
+    depends_on:
+      postgres: {condition: service_healthy}
+    networks:
+      - film-net
+  
 volumes:
   pg-data:

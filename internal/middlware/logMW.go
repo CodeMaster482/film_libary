@@ -49,7 +49,7 @@ func (m *LoggingMiddleware) LoggingMiddleware(next http.Handler) http.Handler {
 		status := wr.Status
 		length := wr.Length
 
-		midlog := m.log.WithFields(logrus.Fields{
+		logEntry := m.log.WithFields(logrus.Fields{
 			"time":       time.Now(),
 			"duration":   time.Since(startTime),
 			"method":     r.Method,
@@ -61,15 +61,15 @@ func (m *LoggingMiddleware) LoggingMiddleware(next http.Handler) http.Handler {
 		})
 		switch {
 		case status >= http.StatusInternalServerError:
-			midlog.Error("Server Error")
+			logEntry.Error("Server Error")
 		case status >= http.StatusBadRequest && status < http.StatusInternalServerError:
-			midlog.Warn("Client Error")
+			logEntry.Warn("Client Error")
 		case status >= http.StatusMultipleChoices && status < http.StatusBadRequest:
-			midlog.Info("Redirect")
+			logEntry.Info("Redirect")
 		case status >= http.StatusOK && status < http.StatusMultipleChoices:
-			midlog.Info("Success")
+			logEntry.Info("Success")
 		default:
-			midlog.Info("Informational")
+			logEntry.Info("Informational")
 		}
 	}
 	return http.HandlerFunc(fn)
